@@ -5,17 +5,19 @@
         }
     ],
     "settings": {
-        "editor.tabSize": 4,
-        "editor.insertSpaces": true,
-        "editor.formatOnSave": true,
-        "C_Cpp.errorSquiggles": "enabled",
-        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-        "files.exclude": {
-            "**/build": true
-        },
-        "C_Cpp.intelliSenseEngine": "default",
+        "C_Cpp.clang_format_fallbackStyle": "none",
         "C_Cpp.clang_format_style": "file",
-        "C_Cpp.clang_format_fallbackStyle": "none"
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+        "C_Cpp.errorSquiggles": "enabled",
+        "C_Cpp.intelliSenseEngine": "default",
+        "cmake.configureOnOpen": true,
+        "cmake.useCMakePresets": "always",
+        "editor.formatOnSave": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+        "files.exclude": {
+            "**/build": false
+        },
     },
     "extensions": {
         "recommendations": [
@@ -26,7 +28,6 @@
             "ms-vscode.cpptools",
             "ms-vscode.vscode-clangd",
             "oderwat.indent-rainbow",
-            "twxs.cmake",
             "xaver.clang-format",
             "yzhang.markdown-all-in-one",
         ]
