@@ -5,11 +5,7 @@
         }
     ],
     "settings": {
-        "C_Cpp.clang_format_fallbackStyle": "none",
-        "C_Cpp.clang_format_style": "file",
-        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-        "C_Cpp.errorSquiggles": "enabled",
-        "C_Cpp.intelliSenseEngine": "default",
+        "clang-format.style": "file",
         "cmake.configureOnOpen": true,
         "cmake.useCMakePresets": "always",
         "editor.formatOnSave": true,
@@ -18,6 +14,24 @@
         "files.exclude": {
             "**/build": false
         },
+        "[cpp]": {
+            "editor.defaultFormatter": "xaver.clang-format"
+        },
+        "cmake.options.statusBarVisibility": "visible",
+        "cmake.options.advanced": {
+            "build": {
+                "statusBarVisibility": "inherit",
+                "inheritDefault": "visible"
+            },
+            "launch": {
+                "statusBarVisibility": "inherit",
+                "inheritDefault": "visible"
+            },
+            "debug": {
+                "statusBarVisibility": "inherit",
+                "inheritDefault": "visible"
+            }
+        }
     },
     "extensions": {
         "recommendations": [
