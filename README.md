@@ -1,4 +1,7 @@
 # 🏆 Advent of Code
+![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg) ![C++](https://img.shields.io/badge/C++-23-blue) ![Last commit](https://img.shields.io/github/last-commit/npatel221/advent-of-code)
+
+
 My solutions to the [Advent of Code](https://adventofcode.com/) programming challenges.  
 
 ## 🎯 Goals
@@ -7,10 +10,13 @@ My solutions to the [Advent of Code](https://adventofcode.com/) programming chal
 - Emphasize correctness and clarity over premature optimization  
 
 ## 🛠 Tech Stack
-- **Language:** C++20  
+- **Language:** C++23  
 - **Build System:** CMake  
 - **Environment:** WSL + Docker (cross-platform)  
 - **Code Style & Formatting:** ClangFormat  
 - **IDE:** Visual Studio Code (with C++ extensions)  
 
 ## 🚀 Getting Started
+
+## 📄 License
+This repository is licensed under the [Apache License 2.0](LICENSE).
