@@ -3,13 +3,14 @@
     "configurePresets": [
         {
             "name": "2025_day1",
+            "displayName": "2025 Day1",
             "description": "Configure 2025 Day 1",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/2025/day1/build",
+            "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_CXX_STANDARD": "23",
                 "CMAKE_CXX_EXTENSIONS": "OFF"
             }
         }
-    ]
+    ],
 }
