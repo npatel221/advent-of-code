@@ -1,1 +1,1 @@
-add_executable(aoc2025_day1 main.cpp)
+add_executable(aoc2025_day01 main.cpp)
