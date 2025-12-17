@@ -49,8 +49,24 @@ class Safe
         return dialPosition;
     }
 
-    void ApplyRotation()
+    bool ApplyRotation(const std::string& command)
     {
+        bool result{false};
+        char direction = command.at(0);
+        uint8_t magnitude = stoi(command.substr(1));
+        // check valid inputs prior to application
+        if (((direction == 'L') || (direction == 'R')) &&
+            (magnitude >= startPosition) && (magnitude <= endPosition))
+        {
+            result = true;
+        }
+
+        if (result)
+        {
+            std::cout << "direction: " << direction
+                      << "\tmagnitude: " << (int)magnitude << "\n";
+        }
+        return result;
     }
 
    private:
@@ -101,10 +117,6 @@ bool OpenFileAndReadAsString(const string& filePath, vector<string>& lines)
     return result;
 }
 
-void ParseInput()
-{
-}
-
 int main(int argc, char* argv[])
 {
     if (argc < 2)
@@ -125,7 +137,8 @@ int main(int argc, char* argv[])
 
     // instantiate
     Safe safeInstance(startPosition, endPosition, dialPosition);
-
-    cout << "Hello, from aoc2025_day1!\n";
-    cout << "Dial position: " << safeInstance.GetDialPosition() << endl;
+    for (const string& line : fileContent)
+    {
+        safeInstance.ApplyRotation(line);
+    }
 }

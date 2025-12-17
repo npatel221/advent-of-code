@@ -16,8 +16,7 @@
         },
         "[cpp]": {
             "editor.defaultFormatter": "xaver.clang-format"
-        },
-        "cmake.options.statusBarVisibility": "icon"
+        }
     },
     "extensions": {
         "recommendations": [
