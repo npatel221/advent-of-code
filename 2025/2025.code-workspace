@@ -1,0 +1,87 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "clang-format.style": "file",
+        "cmake.configureOnOpen": true,
+        "cmake.useCMakePresets": "always",
+        "editor.formatOnSave": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+        "files.exclude": {
+            "**/build": false
+        },
+        "[cpp]": {
+            "editor.defaultFormatter": "xaver.clang-format"
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "donjayamanne.git-extension-pack",
+            "isaias.doxygen-pack",
+            "ms-vscode.cmake-tools",
+            "ms-vscode.cpptools-extension-pack",
+            "ms-vscode.cpptools",
+            "ms-vscode.vscode-clangd",
+            "xaver.clang-format",
+            "yzhang.markdown-all-in-one"
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Clean",
+                "type": "shell",
+                "command": "rm -rf build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Configure Debug",
+                "type": "shell",
+                "command": "cmake --preset debug",
+                "dependsOn": "Clean",
+                "problemMatcher": [],
+            },
+            {
+                "label": "Build Debug",
+                "type": "shell",
+                "command": "cmake --build --preset debug",
+                "dependsOn": "Configure Debug",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                }
+            }
+        ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Day 01 (Debug)",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/build/bin/aoc2025_day01",
+                "args": [
+                    "${workspaceFolder}/day1/input1.txt"
+                ],
+                "cwd": "${workspaceFolder}",
+                "stopAtEntry": false,
+                "externalConsole": false,
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ],
+                "preLaunchTask": "Build Debug"
+            }
+        ]
+    }
+}
