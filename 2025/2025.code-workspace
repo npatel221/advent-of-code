@@ -68,7 +68,7 @@
                 "request": "launch",
                 "program": "${workspaceFolder}/build/bin/aoc2025_day01",
                 "args": [
-                    "${workspaceFolder}/day1/input.txt"
+                    "${workspaceFolder}/day1/input1.txt"
                 ],
                 "cwd": "${workspaceFolder}",
                 "stopAtEntry": false,

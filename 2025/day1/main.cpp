@@ -4,75 +4,76 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
-// numbers is order from 0 - 99
-// rotation: right or left
-// current: 11, R8, right by 8, current = 19
-// current: 19, L19, left by 19, current = 0
-// circular dial - past 0 - then it goes to 99, past 99 - goes to 0
-// password: # of times current position is 0.
-// sample input
-/*
-L68
-L30
-R48
-L5
-R60
-L55
-L1
-L99
-R14
-L82
-*/
-// starting position 50
-
-// Safe has a dial start position 0
-// Safe has a dial end position 99
-// Safe dial starts at position 50
-// Safe has a ApplyRotation
-// Safe has a GetCurrentPosition
-// Safe has a read input function
-
 class Safe
 {
    public:
-    Safe(const uint8_t& inStartPosition, const uint8_t& inEndPosition,
-         const uint8_t& inDialPosition)
+    Safe(const int& inStartPosition, const int& inEndPosition,
+         const int& inDialPosition, const int& inPasswordTarget)
         : startPosition(inStartPosition),
           endPosition(inEndPosition),
           dialPosition(inDialPosition)
     {
+        dialRange = (endPosition - startPosition) + 1;
     }
 
-    uint8_t GetDialPosition()
+    size_t GetPassword()
     {
-        return dialPosition;
+        return password;
     }
 
     bool ApplyRotation(const std::string& command)
     {
         bool result{false};
-        char direction = command.at(0);
-        uint8_t magnitude = stoi(command.substr(1));
-        // check valid inputs prior to application
-        if (((direction == 'L') || (direction == 'R')) &&
-            (magnitude >= startPosition) && (magnitude <= endPosition))
+        char direction;
+        size_t magnitude;
+
+        if (!command.empty())
         {
-            result = true;
+            // parse from string
+            direction = command.at(0);
+            magnitude = std::stoul(command.substr(1));
+
+            // check valid inputs prior to application
+            if ((direction == 'L') || (direction == 'R'))
+            {
+                result = true;
+            }
         }
 
         if (result)
         {
-            std::cout << "direction: " << direction
-                      << "\tmagnitude: " << (int)magnitude << "\n";
+            std::cout << "current pos: " << (int)dialPosition;
+
+            if (direction == 'R')
+            {
+                dialPosition = (dialPosition + magnitude) % dialRange;
+            }
+            else
+            {
+                dialPosition =
+                    (dialPosition + dialRange - (magnitude % dialRange)) %
+                    dialRange;
+            }
+
+            // password is # of times dial is left at 0
+            if (dialPosition == passwordTarget)
+            {
+                ++password;
+            }
+
+            std::cout << "\t\tcommand: " << direction << (int)magnitude
+                      << "\t\tfinal pos: " << (int)dialPosition << "\n";
         }
         return result;
     }
 
    private:
-    uint8_t startPosition{0};
-    uint8_t endPosition{0};
-    uint8_t dialPosition{0};
+    int startPosition{0};
+    int endPosition{0};
+    int dialPosition{0};
+    int dialRange{0};
+    int passwordTarget{0};
+    size_t password{0};
 };
 
 using namespace std;
@@ -131,14 +132,31 @@ int main(int argc, char* argv[])
     vector<string> fileContent{};
     bool result = OpenFileAndReadAsString(inputFilePath, fileContent);
 
-    uint8_t startPosition{0};
-    uint8_t endPosition{99};
-    uint8_t dialPosition{50};
+    int startPosition{0};
+    int endPosition{99};
+    int dialPosition{50};
+    int passwordTarget{0};
 
     // instantiate
-    Safe safeInstance(startPosition, endPosition, dialPosition);
-    for (const string& line : fileContent)
+    Safe safeInstance(startPosition, endPosition, dialPosition, passwordTarget);
+    if (result)
     {
-        safeInstance.ApplyRotation(line);
+        for (const string& line : fileContent)
+        {
+            if (safeInstance.ApplyRotation(line) == false)
+            {
+                result = false;
+                break;
+            }
+        }
+    }
+
+    if (result)
+    {
+        cout << "Password: " << safeInstance.GetPassword() << endl;
+    }
+    else
+    {
+        cerr << "Apply rotation failed" << endl;
     }
 }
