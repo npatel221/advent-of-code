@@ -7,76 +7,56 @@
 class Safe
 {
    public:
-    Safe(const int& inStartPosition, const int& inEndPosition,
-         const int& inDialPosition, const int& inPasswordTarget)
-        : startPosition(inStartPosition),
-          endPosition(inEndPosition),
-          dialPosition(inDialPosition)
+    Safe(const uint8_t& dialStartingPosition)
+        : dialPosition(dialStartingPosition)
     {
-        dialRange = (endPosition - startPosition) + 1;
     }
 
-    size_t GetPassword()
+    size_t GetPassword() const
     {
         return password;
     }
 
-    bool ApplyRotation(const std::string& command)
+    void ApplyRotation(char direction, size_t magnitude, bool debug)
     {
-        bool result{false};
-        char direction;
-        size_t magnitude;
+        int prevPosition = dialPosition;
 
-        if (!command.empty())
+        // precompute magnitude modulo range
+        int effectiveMove = static_cast<int>(magnitude % dialRange);
+
+        if (direction == 'R')
         {
-            // parse from string
-            direction = command.at(0);
-            magnitude = std::stoul(command.substr(1));
-
-            // check valid inputs prior to application
-            if ((direction == 'L') || (direction == 'R'))
-            {
-                result = true;
-            }
+            dialPosition = (dialPosition + effectiveMove) % dialRange;
+        }
+        else  // 'L' move
+        {
+            dialPosition =
+                (dialPosition + dialRange - effectiveMove) % dialRange;
         }
 
-        if (result)
+        // password is # of times dial is left at 0
+        if (dialPosition == passwordTarget)
         {
-            std::cout << "current pos: " << (int)dialPosition;
-
-            if (direction == 'R')
-            {
-                dialPosition = (dialPosition + magnitude) % dialRange;
-            }
-            else
-            {
-                dialPosition =
-                    (dialPosition + dialRange - (magnitude % dialRange)) %
-                    dialRange;
-            }
-
-            // password is # of times dial is left at 0
-            if (dialPosition == passwordTarget)
-            {
-                ++password;
-            }
-
-            std::cout << "\t\tcommand: " << direction << (int)magnitude
-                      << "\t\tfinal pos: " << (int)dialPosition << "\n";
+            ++password;
         }
-        return result;
+
+        if (debug)
+        {
+            std::cout << "current pos: " << (int)prevPosition
+                      << "\t\tcommand: " << direction << (int)magnitude
+                      << "\t\tfinal pos: " << (int)dialPosition << std::endl;
+        }
     }
 
    private:
-    int startPosition{0};
-    int endPosition{0};
+    const int startPosition{0};
+    const int endPosition{99};
+    const int dialRange = (endPosition - startPosition) + 1;  // 100
+    const int passwordTarget{0};
+
     int dialPosition{0};
-    int dialRange{0};
-    int passwordTarget{0};
     size_t password{0};
 };
-
-using namespace std;
 
 /**
  * @brief Check whether a file path is valid and its of file type
@@ -85,36 +65,45 @@ using namespace std;
  * @return true valid
  * @return false otherwise
  */
-bool IsFilePathValid(const string& filePath)
+bool IsFilePathValid(const std::string& filePath)
 {
-    filesystem::path path(filePath);
-    bool result =
-        (filesystem::exists(path) && filesystem::is_regular_file(path));
+    std::filesystem::path path(filePath);
+    bool result = (std::filesystem::exists(path) &&
+                   std::filesystem::is_regular_file(path));
     return result;
 }
 
-bool OpenFileAndReadAsString(const string& filePath, vector<string>& lines)
+std::vector<std::string> ReadInputFile(const std::string& filePath)
 {
-    // check valid path and empty vector before populating
-    bool result = IsFilePathValid(filePath) && (lines.empty());
-
-    ifstream file;
-    // only attempt opening if previous checks passed
-    if (result)
+    std::vector<std::string> result{};
+    bool validPath = IsFilePathValid(filePath);
+    if (validPath)
     {
-        file.open(filePath);
-        result &= file.is_open();
-    }
-
-    if (result)
-    {
-        string line;
-        // parse line by line
-        while (getline(file, line))
+        std::ifstream file(filePath);
+        if (file.is_open())
         {
-            lines.emplace_back(line);
+            std::string line;
+            // parse line by line
+            while (getline(file, line))
+            {
+                result.emplace_back(line);
+            }
         }
     }
+    return result;
+}
+
+struct Command
+{
+    char direction;  // 'L' or 'R'
+    size_t magnitude;
+};
+
+Command ParseCommand(const std::string& line)
+{
+    Command result{};
+    result.direction = line.at(0);
+    result.magnitude = std::stoul(line.substr(1));
     return result;
 }
 
@@ -122,41 +111,26 @@ int main(int argc, char* argv[])
 {
     if (argc < 2)
     {
-        cerr << "Failed to provide input file path: ./aoc2025_day01 "
-                "<input_file>.txt\n";
+        std::cerr << "Failed to provide input file path: ./aoc2025_day01 "
+                     "<input_file>.txt\n";
         return 1;
     }
 
-    string inputFilePath = argv[1];
-    // read file content
-    vector<string> fileContent{};
-    bool result = OpenFileAndReadAsString(inputFilePath, fileContent);
+    std::string inputFilePath = argv[1];
 
-    int startPosition{0};
-    int endPosition{99};
-    int dialPosition{50};
-    int passwordTarget{0};
+    std::vector<std::string> fileContent =
+        ReadInputFile(inputFilePath);  // read file content
+
+    uint8_t dialPosition{50};
 
     // instantiate
-    Safe safeInstance(startPosition, endPosition, dialPosition, passwordTarget);
-    if (result)
-    {
-        for (const string& line : fileContent)
-        {
-            if (safeInstance.ApplyRotation(line) == false)
-            {
-                result = false;
-                break;
-            }
-        }
-    }
+    Safe safeInstance(dialPosition);
 
-    if (result)
+    bool debugFlag = true;
+    for (const std::string& line : fileContent)
     {
-        cout << "Password: " << safeInstance.GetPassword() << endl;
+        auto [direction, magnitude] = ParseCommand(line);
+        safeInstance.ApplyRotation(direction, magnitude, debugFlag);
     }
-    else
-    {
-        cerr << "Apply rotation failed" << endl;
-    }
+    std::cout << "Password: " << safeInstance.GetPassword() << std::endl;
 }
