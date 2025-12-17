@@ -3,7 +3,7 @@
 #include <iostream>
 
 Safe::Safe(const uint8_t& dialStartingPosition)
-    : dialPosition(dialStartingPosition)
+    : dialBeginPosition(dialStartingPosition), dialPosition(dialBeginPosition)
 {
 }
 
@@ -12,32 +12,45 @@ size_t Safe::GetPassword() const
     return password;
 }
 
-void Safe::ApplyRotation(char direction, size_t magnitude, bool debug)
+void Safe::IncrementDial(int step)
 {
-    int prevPosition = dialPosition;
+    dialPosition = (dialPosition + step + dialRange) % dialRange;
+}
 
-    // precompute magnitude modulo range
-    int effectiveMove = static_cast<int>(magnitude % dialRange);
+void Safe::ApplyRotation(char direction, size_t magnitude, bool debug,
+                         bool countEveryZero)
+{
+    int prevPosition = dialPosition;  // cache old pos
 
-    if (direction == 'R')
+    int step = (direction == 'R') ? 1 : -1;  // move forward or backward
+
+    // brute force
+    for (size_t i = 0; i < magnitude; ++i)
     {
-        dialPosition = (dialPosition + effectiveMove) % dialRange;
-    }
-    else  // 'L' move
-    {
-        dialPosition = (dialPosition + dialRange - effectiveMove) % dialRange;
+        IncrementDial(step);
+
+        // check if pos = 0
+        if ((countEveryZero) && (dialPosition == passwordTarget))
+        {
+            ++password;
+        }
     }
 
-    // password is # of times dial is left at 0
-    if (dialPosition == passwordTarget)
+    // only increment when dial stopped at 0
+    if ((!countEveryZero) && (dialPosition == passwordTarget))
     {
         ++password;
     }
 
     if (debug)
-    {
-        std::cout << "current pos: " << (int)prevPosition
-                  << "\t\tcommand: " << direction << (int)magnitude
-                  << "\t\tfinal pos: " << (int)dialPosition << std::endl;
-    }
+        std::cout << "current pos: " << prevPosition
+                  << "\t\tcommand: " << direction << magnitude
+                  << "\t\tfinal pos: " << dialPosition << std::endl;
+}
+
+void Safe::Reset()
+{
+    dialPosition = dialBeginPosition;  // put dial back to original position
+                                       // when it started
+    password = 0;                      // reset counter
 }

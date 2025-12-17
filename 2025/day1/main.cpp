@@ -26,11 +26,24 @@ int main(int argc, char* argv[])
     // instantiate
     Safe safe(dialPosition);
 
-    bool debugFlag = true;
+    // Part #1
+    bool debugFlag = false;
+    bool countEveryZero = false;
     for (const std::string& line : fileContent)
     {
         auto [direction, magnitude] = ParseCommand(line);
-        safe.ApplyRotation(direction, magnitude, debugFlag);
+        safe.ApplyRotation(direction, magnitude, debugFlag, countEveryZero);
     }
-    std::cout << "Password: " << safe.GetPassword() << std::endl;
+    std::cout << "Password #1: " << safe.GetPassword() << std::endl;
+
+    // Part #1
+    safe.Reset();  // put it back to where it started
+    debugFlag = false;
+    countEveryZero = true;
+    for (const std::string& line : fileContent)
+    {
+        auto [direction, magnitude] = ParseCommand(line);
+        safe.ApplyRotation(direction, magnitude, debugFlag, countEveryZero);
+    }
+    std::cout << "Password #2: " << safe.GetPassword() << std::endl;
 }
