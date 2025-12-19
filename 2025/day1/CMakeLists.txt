@@ -1,9 +1,9 @@
-# Compiler warnings and treat warnings as errors
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
-    CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    add_compile_options(-Wall -Wextra -Werror)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options(/W4 /WX)
-endif()
+target_include_directories(common
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-add_executable(aoc2025_day01 main.cpp Command.cpp FileUtils.cpp Safe.cpp )
+add_executable(aoc2025_day01 main.cpp Command.cpp Safe.cpp)
+
+target_link_libraries(aoc2025_day01
+    PRIVATE common
+)
