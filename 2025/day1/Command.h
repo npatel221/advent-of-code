@@ -15,7 +15,7 @@ struct Command
 };
 
 /**
- * @brief Converts a string represnting command to a known type
+ * @brief Converts a string representing command to a known type
  *
  * @param[in] line command string
  * @return Command with direction and magnitude
