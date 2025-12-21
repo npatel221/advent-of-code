@@ -31,9 +31,9 @@ int main(int argc, char* argv[])
 
     ProductIdValidator productIdValidator(std::move(rangeInput));
 
-    std::cout << "Part #1: " << productIdValidator.SumOfInvalidIdPart1()
-              << std::endl;
+    std::cout << "Part #1: "
+              << productIdValidator.CalculateSumOfInvalidIdPart1() << std::endl;
 
-    std::cout << "Part #2: " << productIdValidator.SumOfInvalidIdPart2()
-              << std::endl;
+    std::cout << "Part #2: "
+              << productIdValidator.CalculateSumOfInvalidIdPart2() << std::endl;
 }

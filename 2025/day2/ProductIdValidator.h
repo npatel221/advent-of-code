@@ -10,9 +10,8 @@ class ProductIdValidator
    public:
     explicit ProductIdValidator(const std::vector<Range> ranges);
 
-    uint64_t SumOfInvalidIdPart1();
-
-    uint64_t SumOfInvalidIdPart2();
+    uint64_t CalculateSumOfInvalidIdPart1();
+    uint64_t CalculateSumOfInvalidIdPart2();
 
    private:
     std::vector<Range> rangeInput{};

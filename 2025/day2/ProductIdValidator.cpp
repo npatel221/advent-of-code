@@ -21,11 +21,6 @@ bool ProductIdValidator::IsRepeatedTwice(const uint32_t& pIdInt)
     return result;
 }
 
-uint64_t ProductIdValidator::SumOfInvalidIdPart1()
-{
-    return CalculateSum([this](uint32_t id) { return IsRepeatedTwice(id); });
-}
-
 bool ProductIdValidator::ContainsRepeatedChunks(const uint32_t& pIdInt)
 {
     bool result{false};
@@ -60,7 +55,12 @@ bool ProductIdValidator::ContainsRepeatedChunks(const uint32_t& pIdInt)
     return result;
 }
 
-uint64_t ProductIdValidator::SumOfInvalidIdPart2()
+uint64_t ProductIdValidator::CalculateSumOfInvalidIdPart1()
+{
+    return CalculateSum([this](uint32_t id) { return IsRepeatedTwice(id); });
+}
+
+uint64_t ProductIdValidator::CalculateSumOfInvalidIdPart2()
 {
     return CalculateSum([this](uint32_t id)
                         { return ContainsRepeatedChunks(id); });
