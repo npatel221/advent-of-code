@@ -21,30 +21,47 @@ bool ProductIdValidator::IsRepeatedTwice(const uint32_t& pIdInt)
     return result;
 }
 
-std::vector<uint32_t> ProductIdValidator::FindInvalidIdPart1()
+uint64_t ProductIdValidator::SumOfInvalidIdPart1()
 {
-    std::vector<uint32_t> result{};
-    for (const auto& range : rangeInput)
+    return CalculateSum([this](uint32_t id) { return IsRepeatedTwice(id); });
+}
+
+bool ProductIdValidator::ContainsRepeatedChunks(const uint32_t& pIdInt)
+{
+    bool result{false};
+    std::string pId = std::to_string(pIdInt);
+    size_t strSize = pId.size();
+
+    // Try all possible substring lengths from 1 to n/2
+    for (size_t len = 1; len <= strSize / 2; ++len)
     {
-        for (auto rangeIter = range.begin; rangeIter <= range.end; ++rangeIter)
+        if (strSize % len != 0) continue;  // substring must divide total length
+
+        std::string pattern = pId.substr(0, len);
+        bool allMatch = true;
+
+        // Check every chunk
+        for (size_t i = len; i < strSize; i += len)
         {
-            if (IsRepeatedTwice(rangeIter))
+            if (pId.substr(i, len) != pattern)
             {
-                result.emplace_back(rangeIter);
+                allMatch = false;
+                break;  // early exit if mismatch
             }
         }
+
+        if (allMatch)
+        {
+            result = true;  // repeated pattern found
+            break;
+        }
     }
+
     return result;
 }
 
-uint64_t ProductIdValidator::SumOfInvalidIdPart1()
+uint64_t ProductIdValidator::SumOfInvalidIdPart2()
 {
-    uint64_t result{0};
-    const std::vector<uint32_t> invalidIdList = FindInvalidIdPart1();
-
-    for (const auto& id : invalidIdList)
-    {
-        result += id;
-    }
-    return result;
+    return CalculateSum([this](uint32_t id)
+                        { return ContainsRepeatedChunks(id); });
 }
