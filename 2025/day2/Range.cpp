@@ -10,7 +10,7 @@ Range ParseRange(const std::string& rangeStr)
     std::string left = rangeStr.substr(0, pos);
     std::string right = rangeStr.substr(pos + 1);
 
-    result.begin = std::stoull(left);
-    result.end = std::stoull(right);
+    result.begin = static_cast<uint32_t>(std::stoul(left));
+    result.end = static_cast<uint32_t>(std::stoul(right));
     return result;
 }

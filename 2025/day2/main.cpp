@@ -1,11 +1,13 @@
 #include <iostream>
+#include <vector>
 
 #include "FileUtils.h"
+#include "ProductIdValidator.h"
 #include "Range.h"
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Hello World: Day 02" << std::endl;
+    std::cout << "--- Day 2: Gift Shop ---" << std::endl;
     if (argc < 2)
     {
         std::cerr << "Failed to provide input file path: ./aoc2025_day02 "
@@ -15,16 +17,23 @@ int main(int argc, char* argv[])
 
     std::string inputFilePath = argv[1];
 
+    // read file content
     const char lineendDelimeter = ',';
     std::vector<std::string> fileContent =
-        ReadInputFile(inputFilePath, lineendDelimeter);  // read file content
+        ReadInputFile(inputFilePath, lineendDelimeter);
 
-    // Part #1
+    // extact input from str
+    std::vector<Range> rangeInput{};
     for (const auto& line : fileContent)
     {
-        auto [begin, end] = ParseRange(line);
-        std::cout << "Begin: " << begin << "\tEnd: " << end << std::endl;
+        rangeInput.emplace_back(ParseRange(line));
     }
+
+    ProductIdValidator productIdValidator(std::move(rangeInput));
+
+    // Part #1
+    std::cout << "Part #1: " << productIdValidator.SumOfInvalidIdPart1()
+              << std::endl;
 
     // Part #2
 }
