@@ -20,3 +20,6 @@ bool IsFilePathValid(const std::string& filePath);
  * @return std::vector<std::string> file content
  */
 std::vector<std::string> ReadInputFile(const std::string& filePath);
+
+std::vector<std::string> ReadInputFile(const std::string& filePath,
+                                       const char& delimiter);
