@@ -7,7 +7,7 @@ ProductIdValidator::ProductIdValidator(const std::vector<Range> ranges)
 {
 }
 
-bool ProductIdValidator::IsRepeatedTwice(const uint32_t& pIdInt)
+bool ProductIdValidator::IsRepeatedTwice(const uint32_t& pIdInt) const
 {
     bool result{false};
     std::string pId = std::to_string(pIdInt);
@@ -21,7 +21,7 @@ bool ProductIdValidator::IsRepeatedTwice(const uint32_t& pIdInt)
     return result;
 }
 
-bool ProductIdValidator::ContainsRepeatedChunks(const uint32_t& pIdInt)
+bool ProductIdValidator::ContainsRepeatedChunks(const uint32_t& pIdInt) const
 {
     bool result{false};
     std::string pId = std::to_string(pIdInt);
@@ -57,11 +57,56 @@ bool ProductIdValidator::ContainsRepeatedChunks(const uint32_t& pIdInt)
 
 uint64_t ProductIdValidator::CalculateSumOfInvalidIdPart1()
 {
-    return CalculateSum([this](uint32_t id) { return IsRepeatedTwice(id); });
+    uint64_t result{0};
+    const std::vector<uint32_t> invalidIdList = FindInvalidIdsPart1();
+
+    for (const auto& id : invalidIdList)
+    {
+        result += id;
+    }
+    return result;
 }
 
 uint64_t ProductIdValidator::CalculateSumOfInvalidIdPart2()
 {
-    return CalculateSum([this](uint32_t id)
-                        { return ContainsRepeatedChunks(id); });
+    uint64_t result{0};
+    const std::vector<uint32_t> invalidIdList = FindInvalidIdsPart2();
+
+    for (const auto& id : invalidIdList)
+    {
+        result += id;
+    }
+    return result;
+}
+
+std::vector<uint32_t> ProductIdValidator::FindInvalidIdsPart1() const
+{
+    std::vector<uint32_t> result{};
+    for (const auto& range : rangeInput)
+    {
+        for (auto rangeIter = range.begin; rangeIter <= range.end; ++rangeIter)
+        {
+            if (IsRepeatedTwice(rangeIter))
+            {
+                result.emplace_back(rangeIter);
+            }
+        }
+    }
+    return result;
+}
+
+std::vector<uint32_t> ProductIdValidator::FindInvalidIdsPart2() const
+{
+    std::vector<uint32_t> result{};
+    for (const auto& range : rangeInput)
+    {
+        for (auto rangeIter = range.begin; rangeIter <= range.end; ++rangeIter)
+        {
+            if (ContainsRepeatedChunks(rangeIter))
+            {
+                result.emplace_back(rangeIter);
+            }
+        }
+    }
+    return result;
 }

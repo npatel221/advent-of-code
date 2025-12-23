@@ -18,9 +18,9 @@ int main(int argc, char* argv[])
     std::string inputFilePath = argv[1];
 
     // read file content
-    const char lineendDelimeter = ',';
+    const char lineEndDelimeter = ',';
     std::vector<std::string> fileContent =
-        ReadInputFile(inputFilePath, lineendDelimeter);
+        ReadInputFile(inputFilePath, lineEndDelimeter);
 
     // extact input from str
     std::vector<Range> rangeInput{};
