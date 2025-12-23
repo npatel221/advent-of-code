@@ -60,6 +60,7 @@ uint64_t ProductIdValidator::CalculateSumOfInvalidIdPart1()
     uint64_t result{0};
     const std::vector<uint32_t> invalidIdList = FindInvalidIdsPart1();
 
+    // compute sum
     for (const auto& id : invalidIdList)
     {
         result += id;
@@ -72,6 +73,7 @@ uint64_t ProductIdValidator::CalculateSumOfInvalidIdPart2()
     uint64_t result{0};
     const std::vector<uint32_t> invalidIdList = FindInvalidIdsPart2();
 
+    // compute sum
     for (const auto& id : invalidIdList)
     {
         result += id;
@@ -86,6 +88,7 @@ std::vector<uint32_t> ProductIdValidator::FindInvalidIdsPart1() const
     {
         for (auto rangeIter = range.begin; rangeIter <= range.end; ++rangeIter)
         {
+            // only add to vector when repeated
             if (IsRepeatedTwice(rangeIter))
             {
                 result.emplace_back(rangeIter);
@@ -102,6 +105,7 @@ std::vector<uint32_t> ProductIdValidator::FindInvalidIdsPart2() const
     {
         for (auto rangeIter = range.begin; rangeIter <= range.end; ++rangeIter)
         {
+            // only add to vector when chunked
             if (ContainsRepeatedChunks(rangeIter))
             {
                 result.emplace_back(rangeIter);
